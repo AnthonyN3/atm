@@ -1,12 +1,21 @@
-<h1>ATM Machine 💵💴💷💶</h1>
 <h2>Thank you for using this ATM</h2>
-<h3>Here are your funds</h3>
+<div class="money">Updated Balance: ${{ balance }}</div>
+<div class="money">Withdrew: ${{ amount_withdrawn }}</div>
+<table>
+    <tr>
+        <th>
+            <h3>Here are your funds</h3>
+        </th>
+        <th>
+            <form action="/">
+                <input type="submit" value="Continue">
+            </form>
+        </th>
+    </tr>
+</table>
 <ul>
     {% for val in currency_amount %}
     <li>💵</li>
     {% endfor %}
 </ul>
 <br>
-<form action="/">
-    <input type="submit" value="Continue">
-</form>

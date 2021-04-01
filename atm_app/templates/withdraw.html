@@ -1,7 +1,6 @@
-<h1>ATM Machine 💵💴💷💶</h1>
 <h2>Withdraw Currency</h2>
 <p>Welcome "{{ account }}"</p>
-<p>You have a balance of {{ balance }}</p>
+<div class="money">Balance: ${{ balance }}</div>
 <form action="/withdraw" method="post">
     <label for="currency_amount">Please specify how much you would like to withdraw</label><br>
     <input type="number" id="currency_amount" name="currency_amount"><br>

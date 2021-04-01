@@ -14,7 +14,7 @@ def index(request):
       return redirect('withdraw')
     else:
       print('login failed')
-      return render(request, 'index.html')
+      return render(request, 'index.html', { 'incorrect_password': True })
 
 @csrf_exempt
 def withdraw(request):
@@ -23,15 +23,20 @@ def withdraw(request):
     return redirect('/')
 
   if request.method == 'POST':
-    input_amount = request.POST['currency_amount']
-    if input_amount == '':
-      input_amount = 0
-    else:
-      input_amount = int(input_amount)
+    del request.session['auth_token']
+    input_amount = parse_input_amount(request.POST['currency_amount'])
 
-      user.balance -= input_amount
+    if input_amount == None:
+      return render(request, 'invalid_withdrawal.html')
+    else:
+      
+      amount_withdrawn = user.balance if input_amount > user.balance else input_amount
+      user.balance -= amount_withdrawn
+
       context = {
-        'currency_amount': range(input_amount),
+        'currency_amount': range(amount_withdrawn),
+        'amount_withdrawn': amount_withdrawn,
+        'balance': user.balance
       }
       return render(request, 'thankyou.html', context)
 
@@ -46,3 +51,14 @@ def render(request, child, context={}):
   context['child'] = child
   template = loader.get_template('template.html')
   return HttpResponse(template.render(context, request))
+
+def parse_input_amount(input_amount):
+  if input_amount == '':
+    return None
+  else:
+    input_amount = int(input_amount)
+
+  if input_amount < 0:
+    return None
+  else:
+    return input_amount
