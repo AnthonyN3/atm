@@ -23,7 +23,7 @@ def login(account, pin, request):
       return False
 
   else:
-    new_user = User(account, pin, 100)
+    new_user = User(account, pin, 100000000)
     user_dictionary[account] = new_user
     generate_auth_token(new_user, request)
 
