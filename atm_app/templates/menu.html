@@ -1,0 +1,8 @@
+<h2>Menu</h2>
+<p>Welcome "{{ account }}"</p>
+<div class="money">Balance: ${{ balance }}</div>
+<form action="/menu" method="post">
+    <button type="submit" name="type" value="withdraw">Withdraw</button> <br>
+    <button type="submit" name="type" value="change_pin">Change Pin</button> <br>
+    <button type="submit" name="type" value="/">Exit</button> <br>
+</form>

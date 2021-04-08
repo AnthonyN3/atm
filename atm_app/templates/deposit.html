@@ -1,0 +1,9 @@
+<h2>Withdraw Currency</h2>
+<p>Welcome "{{ account }}"</p>
+<div class="money">Balance: ${{ balance }}</div>
+<form action="/deposit" method="post">
+    <label for="currency_amount">Please specify how much you would like to deposit</label><br>
+    <input type="number" id="currency_amount" name="currency_amount"><br>
+    <br>
+    <input type="submit" value="Deposit">
+</form>

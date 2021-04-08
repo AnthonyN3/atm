@@ -3,7 +3,7 @@
 <div class="money">Balance: ${{ balance }}</div>
 <form action="/withdraw" method="post">
     <label for="currency_amount">Please specify how much you would like to withdraw</label><br>
-    <input type="number" id="currency_amount" name="currency_amount"><br>
+    <input type="number" id="currency_amount" name="currency_amount" min="0"><br>
     <br>
     <input type="submit" value="Withdraw">
 </form>

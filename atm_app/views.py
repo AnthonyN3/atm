@@ -11,10 +11,55 @@ def index(request):
   else:
     if login(request.POST['account'], request.POST['pin'], request):
       print('login successful')
-      return redirect('withdraw')
+      return redirect('menu')
     else:
       print('login failed')
       return render(request, 'index.html', { 'incorrect_password': True })
+
+@csrf_exempt
+def menu(request):
+  user = authenticate(request)
+  if user == None:
+    return redirect('/')
+
+  if request.method == 'POST':
+    goto = request.POST['type']
+    if goto == '/' or goto == 'withdraw' or goto == 'change_pin':
+      if goto == '/':
+        del request.session['auth_token']
+      return redirect(goto)
+    else:
+      return redirect('menu')
+  else:
+    context = {
+      'account': user.account,
+      'balance': user.balance
+    }
+    return render(request, 'menu.html', context)
+
+@csrf_exempt
+def change_pin(request):
+  user = authenticate(request)
+  if user == None:
+    return redirect('/')
+
+  if request.method == 'POST':
+    print('hi')
+    if (request.POST['old_pin'] == user.pin):
+      user.pin = request.POST['new_pin']
+      return redirect('menu')
+    else:
+      context = {
+        'account': user.account,
+        'incorrect_pin': True,
+      }
+      return render(request, 'change_pin.html', context)
+  else:
+    context = {
+      'account': user.account,
+    }
+    return render(request, 'change_pin.html', context)
+
 
 @csrf_exempt
 def withdraw(request):
@@ -23,7 +68,7 @@ def withdraw(request):
     return redirect('/')
 
   if request.method == 'POST':
-    del request.session['auth_token']
+    #del request.session['auth_token']
     input_amount = parse_input_amount(request.POST['currency_amount'])
 
     if input_amount == None:
@@ -43,7 +88,7 @@ def withdraw(request):
   else:
     context = {
       'account': user.account,
-      'balance': user.balance
+      'balance': user.balance,
     }
     return render(request, 'withdraw.html', context)
 
