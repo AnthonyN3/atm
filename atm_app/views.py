@@ -24,8 +24,9 @@ def menu(request):
 
   if request.method == 'POST':
     goto = request.POST['type']
-    if goto == '/' or goto == 'withdraw' or goto == 'change_pin':
+    if goto in {'/', 'withdraw', 'change_pin', 'deposit'}:
       if goto == '/':
+        print('deleted session')
         del request.session['auth_token']
       return redirect(goto)
     else:
@@ -44,7 +45,9 @@ def change_pin(request):
     return redirect('/')
 
   if request.method == 'POST':
-    print('hi')
+    if 'back' in request.POST:
+      return redirect('menu')
+
     if (request.POST['old_pin'] == user.pin):
       user.pin = request.POST['new_pin']
       return redirect('menu')
@@ -60,6 +63,40 @@ def change_pin(request):
     }
     return render(request, 'change_pin.html', context)
 
+@csrf_exempt
+def deposit(request):
+  user = authenticate(request)
+  if user == None:
+    return redirect('/')
+
+  if request.method == 'POST':
+    if 'back' in request.POST:
+      return redirect('menu')
+
+    input_amount = parse_input_amount(request.POST['currency_amount'])
+
+    if input_amount == None:
+      return render(request, 'invalid_transaction.html')
+    else:
+
+      amount_deposited = 0 if input_amount < 0 else input_amount
+      user.balance += amount_deposited
+      print(amount_deposited)
+
+      context = {
+        'currency_amount': range(amount_deposited),
+        'amount': amount_deposited,
+        'type': 'Deposited',
+        'balance': user.balance
+      }
+      return render(request, 'thankyou.html', context)
+
+  else:
+    context = {
+      'account': user.account,
+      'balance': user.balance,
+    }
+    return render(request, 'deposit.html', context)
 
 @csrf_exempt
 def withdraw(request):
@@ -68,11 +105,13 @@ def withdraw(request):
     return redirect('/')
 
   if request.method == 'POST':
-    #del request.session['auth_token']
+    if 'back' in request.POST:
+      return redirect('menu')
+
     input_amount = parse_input_amount(request.POST['currency_amount'])
 
     if input_amount == None:
-      return render(request, 'invalid_withdrawal.html')
+      return render(request, 'invalid_transaction.html')
     else:
       
       amount_withdrawn = user.balance if input_amount > user.balance else input_amount
@@ -80,7 +119,8 @@ def withdraw(request):
 
       context = {
         'currency_amount': range(amount_withdrawn),
-        'amount_withdrawn': amount_withdrawn,
+        'amount': amount_withdrawn,
+        'type': 'Withdrew',
         'balance': user.balance
       }
       return render(request, 'thankyou.html', context)

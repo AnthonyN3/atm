@@ -3,7 +3,8 @@
 <div class="money">Balance: ${{ balance }}</div>
 <form action="/deposit" method="post">
     <label for="currency_amount">Please specify how much you would like to deposit</label><br>
-    <input type="number" id="currency_amount" name="currency_amount"><br>
+    <input type="number" id="currency_amount" name="currency_amount" min="0"><br>
     <br>
-    <input type="submit" value="Deposit">
+    <input type="submit" name="back" value="back">
+    <input type="submit" name="deposit" value="Deposit">
 </form>
