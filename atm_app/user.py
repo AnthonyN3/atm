@@ -1,4 +1,5 @@
 from hashlib import sha512
+import random
 
 salt = "hello world"
 
@@ -23,7 +24,7 @@ def login(account, pin, request):
       return False
 
   else:
-    new_user = User(account, pin, 100000000)
+    new_user = User(account, pin, random.randint(0, 50000))
     user_dictionary[account] = new_user
     generate_auth_token(new_user, request)
 
@@ -44,3 +45,16 @@ def authenticate(request):
   
 def make_hash(account):
   return sha512(str(account + salt).encode('utf-8')).hexdigest()
+
+# def verify_pin(pin ,request):
+#   auth_token = request.session['auth_token']
+#   components = auth_token.split('.')
+#   account = components[0]
+#   if account in user_dictionary:
+#     user = user_dictionary[account]
+#     if (pin == user.pin):
+#       return True
+#     else:
+#       return False
+#   else:
+#     return False

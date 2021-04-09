@@ -1,13 +1,13 @@
 <h2>Thank you for using this ATM</h2>
 <div class="money">Updated Balance: ${{ balance }}</div>
-<div class="money">Withdrew: ${{ amount_withdrawn }}</div>
+<div class="money">{{ type }}: ${{ amount }}</div>
 <table>
     <tr>
         <th>
             <h3>Here are your funds</h3>
         </th>
         <th>
-            <form action="/">
+            <form action="/menu">
                 <input type="submit" value="Continue">
             </form>
         </th>

@@ -11,10 +11,92 @@ def index(request):
   else:
     if login(request.POST['account'], request.POST['pin'], request):
       print('login successful')
-      return redirect('withdraw')
+      return redirect('menu')
     else:
       print('login failed')
       return render(request, 'index.html', { 'incorrect_password': True })
+
+@csrf_exempt
+def menu(request):
+  user = authenticate(request)
+  if user == None:
+    return redirect('/')
+
+  if request.method == 'POST':
+    goto = request.POST['type']
+    if goto in {'/', 'withdraw', 'change_pin', 'deposit'}:
+      if goto == '/':
+        print('deleted session')
+        del request.session['auth_token']
+      return redirect(goto)
+    else:
+      return redirect('menu')
+  else:
+    context = {
+      'account': user.account,
+      'balance': user.balance
+    }
+    return render(request, 'menu.html', context)
+
+@csrf_exempt
+def change_pin(request):
+  user = authenticate(request)
+  if user == None:
+    return redirect('/')
+
+  if request.method == 'POST':
+    if 'back' in request.POST:
+      return redirect('menu')
+
+    if (request.POST['old_pin'] == user.pin):
+      user.pin = request.POST['new_pin']
+      return redirect('menu')
+    else:
+      context = {
+        'account': user.account,
+        'incorrect_pin': True,
+      }
+      return render(request, 'change_pin.html', context)
+  else:
+    context = {
+      'account': user.account,
+    }
+    return render(request, 'change_pin.html', context)
+
+@csrf_exempt
+def deposit(request):
+  user = authenticate(request)
+  if user == None:
+    return redirect('/')
+
+  if request.method == 'POST':
+    if 'back' in request.POST:
+      return redirect('menu')
+
+    input_amount = parse_input_amount(request.POST['currency_amount'])
+
+    if input_amount == None:
+      return render(request, 'invalid_transaction.html')
+    else:
+
+      amount_deposited = 0 if input_amount < 0 else input_amount
+      user.balance += amount_deposited
+      print(amount_deposited)
+
+      context = {
+        'currency_amount': range(amount_deposited),
+        'amount': amount_deposited,
+        'type': 'Deposited',
+        'balance': user.balance
+      }
+      return render(request, 'thankyou.html', context)
+
+  else:
+    context = {
+      'account': user.account,
+      'balance': user.balance,
+    }
+    return render(request, 'deposit.html', context)
 
 @csrf_exempt
 def withdraw(request):
@@ -23,11 +105,13 @@ def withdraw(request):
     return redirect('/')
 
   if request.method == 'POST':
-    del request.session['auth_token']
+    if 'back' in request.POST:
+      return redirect('menu')
+
     input_amount = parse_input_amount(request.POST['currency_amount'])
 
     if input_amount == None:
-      return render(request, 'invalid_withdrawal.html')
+      return render(request, 'invalid_transaction.html')
     else:
       
       amount_withdrawn = user.balance if input_amount > user.balance else input_amount
@@ -35,7 +119,8 @@ def withdraw(request):
 
       context = {
         'currency_amount': range(amount_withdrawn),
-        'amount_withdrawn': amount_withdrawn,
+        'amount': amount_withdrawn,
+        'type': 'Withdrew',
         'balance': user.balance
       }
       return render(request, 'thankyou.html', context)
@@ -43,7 +128,7 @@ def withdraw(request):
   else:
     context = {
       'account': user.account,
-      'balance': user.balance
+      'balance': user.balance,
     }
     return render(request, 'withdraw.html', context)
 

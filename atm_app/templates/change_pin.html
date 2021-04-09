@@ -1,0 +1,14 @@
+<h2>Change Pin</h2>
+<p>For user: "{{ account }}"</p>
+<form action="/change_pin" method="post">
+    <label for="old_pin">Enter Old Pin</label><br>
+    <input type="password" id="old_pin" name="old_pin"><br>
+    <label for="new_pin">Enter New Pin</label><br>
+    <input type="password" id="new_pin" name="new_pin"><br>
+    <br>
+    <input type="submit" name="back" value="back">
+    <input type="submit" name="change" value="Change">
+</form>
+{% if incorrect_pin %}
+<h2 class="invalid">Incorrect Pin</h2>
+{% endif %}
