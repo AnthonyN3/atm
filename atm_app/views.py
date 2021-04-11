@@ -6,6 +6,10 @@ from atm_app.user import User, login, authenticate
 
 @csrf_exempt
 def index(request):
+  user = authenticate(request)
+  if user != None:
+    return redirect('menu')
+
   if request.method != 'POST':
     return render(request, 'index.html')
   else:

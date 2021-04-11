@@ -44,20 +44,7 @@ def authenticate(request):
   auth_token = request.session['auth_token']
   components = auth_token.split('.')
   if make_hash(components[0]) == components[1]:
-    return user_dictionary[components[0]]
+    return user_dictionary[components[0]] if components[0] in user_dictionary else None
   
 def make_hash(account):
   return sha512(str(account + salt).encode('utf-8')).hexdigest()
-
-# def verify_pin(pin ,request):
-#   auth_token = request.session['auth_token']
-#   components = auth_token.split('.')
-#   account = components[0]
-#   if account in user_dictionary:
-#     user = user_dictionary[account]
-#     if (pin == user.pin):
-#       return True
-#     else:
-#       return False
-#   else:
-#     return False
