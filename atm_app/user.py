@@ -15,6 +15,9 @@ user_dictionary = {}
 # if the pins do not match, then return `None`
 # if the user isn't in the dictionary, create & return a new user with this info
 def login(account, pin, request):
+  if account == "" or pin == "":
+    return False
+
   if account in user_dictionary:
     user = user_dictionary[account]
     if (pin == user.pin):
@@ -24,7 +27,7 @@ def login(account, pin, request):
       return False
 
   else:
-    new_user = User(account, pin, random.randint(0, 50000))
+    new_user = User(account, pin, random.randint(0, 5000))
     user_dictionary[account] = new_user
     generate_auth_token(new_user, request)
 

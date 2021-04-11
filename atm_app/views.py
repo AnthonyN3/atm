@@ -48,7 +48,7 @@ def change_pin(request):
     if 'back' in request.POST:
       return redirect('menu')
 
-    if (request.POST['old_pin'] == user.pin):
+    if (request.POST['old_pin'] == user.pin and request.POST['new_pin'] != ""):
       user.pin = request.POST['new_pin']
       return redirect('menu')
     else:
@@ -75,7 +75,7 @@ def deposit(request):
 
     input_amount = parse_input_amount(request.POST['currency_amount'])
 
-    if input_amount == None:
+    if input_amount == None or input_amount > 10000:
       return render(request, 'invalid_transaction.html')
     else:
 
@@ -110,7 +110,7 @@ def withdraw(request):
 
     input_amount = parse_input_amount(request.POST['currency_amount'])
 
-    if input_amount == None:
+    if input_amount == None or input_amount > 2500:
       return render(request, 'invalid_transaction.html')
     else:
       
