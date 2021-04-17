@@ -1,12 +1,14 @@
 <h2>Enter Credentials</h2>
 <form action="" method="post">
     <label for="account">Account</label><br>
-    <input type="text" id="account" name="account" required><br>
+    <input type="text" id="account" name="account" maxlength="15" pattern="[A-Za-z0-9]+" title="Account should only contain numbers and letters" required><br>
     <label for="pin">Pin</label><br>
-    <input type="password" id="pin" name="pin" required><br>
+    <input type="password" id="pin" name="pin" minlength="4" maxlength="4" pattern="[a-z0-9]{4}" title="Pin should only contain numbers and lowercase letters" required><br>
     <br>
     <input type="submit" value="Submit">
 </form>
 {% if incorrect_password %}
 <h2 class="invalid">Invalid Account or PIN</h2>
+{% elif invalid_input %}
+<h2 class="invalid">Failed Registration</h2>
 {% endif %}

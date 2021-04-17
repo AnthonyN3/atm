@@ -48,3 +48,9 @@ def authenticate(request):
   
 def make_hash(account):
   return sha512(str(account + salt).encode('utf-8')).hexdigest()
+
+def valid_pin(pin):
+  return pin.isalnum() and len(pin) == 4 and not pin.isupper()
+
+def valid_name(account):
+  return account.isalnum() and len(account) <= 15

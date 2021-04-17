@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.template import loader
 from django.views.decorators.csrf import csrf_exempt
-from atm_app.user import User, login, authenticate
+from atm_app.user import valid_name, valid_pin, login, authenticate
 
 @csrf_exempt
 def index(request):
@@ -13,7 +13,10 @@ def index(request):
   if request.method != 'POST':
     return render(request, 'index.html')
   else:
-    if login(request.POST['account'], request.POST['pin'], request):
+    # valid name/pin technically should ALWAYS pass because front end limits (BUT.. still need to check)
+    if not valid_name(request.POST['account']) or not valid_pin(request.POST['pin']):
+      return render(request, 'index.html', { 'invalid_input': True })
+    elif login(request.POST['account'], request.POST['pin'], request):
       print('login successful')
       return redirect('menu')
     else:
@@ -52,7 +55,7 @@ def change_pin(request):
     if 'back' in request.POST:
       return redirect('menu')
 
-    if (request.POST['old_pin'] == user.pin and request.POST['new_pin'] != ""):
+    if (request.POST['old_pin'] == user.pin and valid_pin(request.POST['new_pin'])):
       user.pin = request.POST['new_pin']
       return redirect('menu')
     else:
@@ -79,7 +82,7 @@ def deposit(request):
 
     input_amount = parse_input_amount(request.POST['currency_amount'])
 
-    if input_amount == None or input_amount > 10000:
+    if input_amount == None or input_amount > 10000 or input_amount < 1:
       return render(request, 'invalid_transaction.html')
     else:
 
@@ -114,7 +117,7 @@ def withdraw(request):
 
     input_amount = parse_input_amount(request.POST['currency_amount'])
 
-    if input_amount == None or input_amount > 2500:
+    if input_amount == None or input_amount > 2500 or input_amount < 1:
       return render(request, 'invalid_transaction.html')
     else:
       

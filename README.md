@@ -85,9 +85,9 @@ To deploy onto your local network you will need to add the ip of the device that
 
 1. Get your devices IP address  
 2. In the ATM project go to the file `atm-main\atm\settings.py`
-3. locate `ALLOWED_HOSTS = []` and add your deevices ip into it `(eg. ALLOWED_HOSTS = ['192.168.1.145'])`
+3. locate `ALLOWED_HOSTS = []` and add your devices ip into it `(eg. ALLOWED_HOSTS = ['192.168.1.145'])`
 
-Note: Alternatively, you can add `device_name.local` into the allowed hosts.
+Note: Alternatively, you can add `device_name.local` into the allowed hosts or even do `ALLOWED_HOSTS = ['*']` instead of finding your devices IP address.
 
 Using your terminal navigate into the ATM project and run the following command:
 

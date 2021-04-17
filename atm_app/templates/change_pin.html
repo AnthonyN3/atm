@@ -2,9 +2,9 @@
 <p>For user: "{{ account }}"</p>
 <form action="/change_pin" method="post">
     <label for="old_pin">Enter Old Pin</label><br>
-    <input type="password" id="old_pin" name="old_pin"><br>
+    <input type="password" id="old_pin" name="old_pin" minlength="4" maxlength="4" pattern="[a-z0-9]{4}" title="Pin should only contain numbers and lowercase letters"><br>
     <label for="new_pin">Enter New Pin</label><br>
-    <input type="password" id="new_pin" name="new_pin"><br>
+    <input type="password" id="new_pin" name="new_pin" minlength="4" maxlength="4" pattern="[a-z0-9]{4}" title="Pin should only contain numbers and lowercase letters"><br>
     <br>
     <input type="submit" name="back" value="back">
     <input type="submit" name="change" value="Change">
